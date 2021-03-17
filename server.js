@@ -3,14 +3,16 @@ var bodyParser = require('body-parser');
 var pg = require('pg');
 pg.defaults.ssl = true;
 var app = express();
- 
+
+var pg_db_uri ="postgres://aykwskodbsiqlq:fc6ae78a29eb31506480226a790e09f95cfd09cdb23b5f5f74535a1ca486b324@ec2-18-214-208-89.compute-1.amazonaws.com:5432/d996mmim3dugo8";
+
 app.set('port', process.env.PORT || 5000);
 
 app.use(express.static('public'));
 app.use(bodyParser.json());
 
 app.post('/update', function(req, res) {
-    pg.connect(process.env.DATABASE_URL, function (err, conn, done) {
+    pg.connect(pg_db_uri, function (err, conn, done) {
         // watch for any connect issues
         if (err) console.log(err);
         conn.query(
