@@ -1,7 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var pg = require('pg');
-pg.defaults.ssl = true;
 var app = express();
 
 var pg_db_uri ="postgres://aykwskodbsiqlq:fc6ae78a29eb31506480226a790e09f95cfd09cdb23b5f5f74535a1ca486b324@ec2-18-214-208-89.compute-1.amazonaws.com:5432/d996mmim3dugo8";
@@ -16,11 +15,11 @@ app.post('/update', function(req, res) {
         // watch for any connect issues
         if (err) console.log(err);
         conn.query(
-            'UPDATE salesforce.Contact SET Phone = $1, HomePhone = $1, MobilePhone = $1 WHERE LOWER(FirstName) = LOWER($2) AND LOWER(LastName) = LOWER($3) AND LOWER(Email) = LOWER($4)',
+            'UPDATE salesforce.Contact SET Phone = $1, MobilePhone = $1 WHERE LOWER(FirstName) = LOWER($2) AND LOWER(LastName) = LOWER($3) AND LOWER(Email) = LOWER($4)',
             [req.body.phone.trim(), req.body.firstName.trim(), req.body.lastName.trim(), req.body.email.trim()],
             function(err, result) {
                 if (err != null || result.rowCount == 0) {
-                  conn.query('INSERT INTO salesforce.Contact (Phone, MobilePhone, FirstName, LastName, Email) VALUES ($1, $2, $3, $4, $5)',
+                  conn.query('INSERT INTO salesforce.Contact (Phone, MobilePhone, FirstName, LastName, Email) VALUES ($1, $1, $2, $3, $4)',
                   [req.body.phone.trim(), req.body.phone.trim(), req.body.firstName.trim(), req.body.lastName.trim(), req.body.email.trim()],
                   function(err, result) {
                     done();
